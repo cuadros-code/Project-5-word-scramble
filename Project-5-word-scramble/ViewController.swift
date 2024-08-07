@@ -15,6 +15,12 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(promptForAnswer)
+        )
+        
         if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt"){
             if let startWords = try? String(contentsOf: startWordsURL) {
                 allWords = startWords.components(separatedBy: "\n")
@@ -45,6 +51,33 @@ class ViewController: UITableViewController {
         content.text = usedWords[indexPath.row]
         cell.contentConfiguration = content
         return cell
+    }
+    
+    @objc func promptForAnswer(){
+        let ac = UIAlertController(
+            title: "Enter answer",
+            message: nil,
+            preferredStyle: .alert
+        )
+        ac.addTextField { (textField) in
+            textField.placeholder = "Enter your word"
+        }
+        
+        let submitAction = UIAlertAction(title: "Submit", style: .default) { 
+            [weak ac, weak self] _ in
+            guard let answer = ac?.textFields?[0].text else { return }
+            self?.submit(answer)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        
+        ac.addAction(submitAction)
+        ac.addAction(cancelAction)
+        present(ac, animated: true)
+    }
+    
+    func submit(_ answer: String) {
+        print(answer)
     }
 
 
