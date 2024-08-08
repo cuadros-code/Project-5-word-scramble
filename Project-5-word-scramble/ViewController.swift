@@ -15,6 +15,7 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Actions NavigationBar
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
@@ -27,6 +28,7 @@ class ViewController: UITableViewController {
             action: #selector(startGame)
         )
         
+        // Get List of Words From Disk
         if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt"){
             if let startWords = try? String(contentsOf: startWordsURL) {
                 allWords = startWords.components(separatedBy: "\n")
@@ -59,6 +61,7 @@ class ViewController: UITableViewController {
         return cell
     }
     
+    // Show Alert to User Enter Word
     @objc func promptForAnswer(){
         let ac = UIAlertController(
             title: "Enter answer",
@@ -82,6 +85,7 @@ class ViewController: UITableViewController {
         present(ac, animated: true)
     }
     
+    // Validate Every Possibles Error And Insert Word in Table
     func submit(_ answer: String) {
         let lowerAnswer = answer.lowercased()
         
@@ -113,6 +117,7 @@ class ViewController: UITableViewController {
         }
     }
     
+    // Validate if Can Build a New Word
     func isPossible(word: String) -> Bool {
         guard var tempWord = title?.lowercased() else { return false }
         
@@ -130,10 +135,12 @@ class ViewController: UITableViewController {
         return true
     }
     
+    // Validate if Word not Exist in Array
     func isOriginal(word: String) -> Bool {
         return !usedWords.contains(word)
     }
 
+    // Validate if Word is Real and Exist
     func isReal(word: String) -> Bool {
         let checker = UITextChecker()
         let range = NSRange(location: 0, length: word.utf16.count)
