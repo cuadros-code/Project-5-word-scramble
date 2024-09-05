@@ -14,6 +14,7 @@ class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let userDefaults = UserDefaults.standard
         
         // Actions NavigationBar
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -39,14 +40,29 @@ class ViewController: UITableViewController {
             allWords = ["solkworm"]
         }
         
-        startGame()
+        
+        if let getTitle = userDefaults.string(forKey: "selectElement") {
+            title = getTitle
+        } else {
+            startGame()
+        }
+        
+
+        if let getUsedWords = userDefaults.array(forKey: "usedWords") as? [String] {
+            usedWords = getUsedWords
+        }
         
     }
     
     @objc func startGame() {
-        self.title = allWords.randomElement()
+        let selectElement = allWords.randomElement()
+        self.title = selectElement
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
+        
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(selectElement, forKey: "selectElement")
+        userDefaults.set([], forKey: "usedWords")
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,6 +111,10 @@ class ViewController: UITableViewController {
                     usedWords.insert(answer.lowercased(), at: 0)
                     let indexPath = IndexPath(row: 0, section: 0)
                     tableView.insertRows(at: [indexPath], with: .fade)
+                    
+                    let userDefaults = UserDefaults.standard
+                    userDefaults.set(usedWords, forKey: "usedWords")
+                    
                     return
                 } else {
                     showAlertController(
